@@ -1,40 +1,44 @@
+import React from 'react';
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
-import { useAuth } from '~/lib/auth';
+import { NextPage } from 'next';
+import { Button } from '@chakra-ui/button';
+import { Box, Heading, Text } from '@chakra-ui/layout';
 
-export default function Home() {
+import { useAuth } from '~/lib/auth';
+import { Logo } from '~/styles/icons';
+
+const Home: NextPage = () => {
   const auth = useAuth();
   return (
-    <div className={styles.container}>
+    <div className="container">
       <Head>
-        <title>Create Next App</title>
+        <title>Fast Feedback</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-        <button onClick={() => auth.signinWithGithub()}>Sign in</button>
+      <Box
+        display="flex"
+        height="100vh"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+      >
+        <Heading fontWeight="normal">Fast Feedback</Heading>
+        <Logo color="black" name="logo" w={32} h={32} />
+        <Text>
+          Current User: <code>{auth?.user?.name}</code>
+        </Text>
+        {auth.user ? (
+          <>
+            <Button onClick={() => auth.signout()}>Sign Out</Button>
+          </>
+        ) : (
+          <Button onClick={() => auth.signinWithGithub()}>Sign in</Button>
+        )}
         <div>{auth?.user?.email}</div>
-        {auth?.user && <button onClick={() => auth.signout()}>SIgn Out</button>}
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+      </Box>
     </div>
   );
-}
+};
+
+export default Home;
