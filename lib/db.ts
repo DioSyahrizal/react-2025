@@ -10,6 +10,6 @@ export function createUser(uid: string, data: any) {
     .set({ uid, ...data }, { merge: true });
 }
 
-export function createSite(data: SiteFormState) {
+export function createSite(data: any) {
   return firestore.collection('sites').add(data);
 }

@@ -11,25 +11,43 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Input
+  Input,
+  useToast
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 
 import { SiteFormState } from '~/interfaces/sites';
 import { createSite } from '~/lib/db';
+import { useAuth } from '~/lib/auth';
 
 const AddSiteModal = () => {
+  const toast = useToast();
+  const auth = useAuth();
   const initialRef = useRef<HTMLInputElement>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { handleSubmit, register, reset } = useForm<SiteFormState>();
 
-  const submitSite = (value: SiteFormState) =>
-    createSite(value)
+  const submitSite = ({ site, url }: SiteFormState) =>
+    createSite({
+      authorId: auth.user.uid,
+      createAt: new Date().toISOString(),
+      site,
+      url
+    })
       .then(() => {
         onClose();
         reset();
+        toast({
+          title: 'Success',
+          description: "We've added your site",
+          status: 'success',
+          duration: 5000,
+          isClosable: true
+        });
       })
-      .catch((err) => new Error(err));
+      .catch((err) => {
+        throw new Error(err);
+      });
 
   return (
     <>
